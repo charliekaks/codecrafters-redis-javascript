@@ -56,7 +56,6 @@ const server = net.createServer((connection) => {
 //         console.log(finalString);
 //     }
 // }
-RESPParserInput('$3\r\nhey\r\n')
 });
 
 server.listen(6379, "127.0.0.1");
