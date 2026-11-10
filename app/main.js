@@ -36,6 +36,7 @@ function RESPParserOutput(input){
 const server = net.createServer((connection) => {
   //Listening and responding to clients requests
   connection.on('data',(data)=>{
+    console.log(data);
     let inputData = RESPParserInput(data);
     if(inputData[0].toLowerCase() === 'echo'){
         let response = RESPParserOutput(inputData[1]);
