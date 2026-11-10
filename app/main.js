@@ -29,9 +29,6 @@ function RESPParserOutput(input){
     console.log('$' + `${stringLength}\\r\\n${input}\\r\\n`)
     return `${stringLength}\r\n{input}\r\n`
 }
-//RESPParserInput('$3\r\nhey\r\n');
-RESPParserInput('*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n');
-RESPParserOutput('hey')
 
 // Uncomment the code below to pass the first stage
 const server = net.createServer((connection) => {
@@ -44,9 +41,9 @@ const server = net.createServer((connection) => {
     }  
   })
 
-function RESPParserOutput(input){
+// function RESPParserOutput(input){
 
-}
+// }
 // Parser the RESP input from the client and output the strings or outputs
 // function RESPParserInput(input){
 //     //RESP string example $3\r\nhey\r\n
