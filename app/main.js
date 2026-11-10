@@ -3,6 +3,7 @@ const net = require("net");
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 function RESPParserInput(input){
+    console.log(input);
     //RESP string example $3\r\nhey\r\n
     // if(input.charAt(0) === "$"){
     // let slicedString = input.trim().substring(2);
@@ -13,7 +14,7 @@ function RESPParserInput(input){
     if(input.charAt('*')){
         let finalStringArray = [];
         let arrayLength = input.charAt(1);
-        console.log(input)
+        // console.log(input)
         let arrayString = input.trim().substring(5);
         let arrayOfItems = arrayString.split('$');
         console.log(arrayOfItems);
