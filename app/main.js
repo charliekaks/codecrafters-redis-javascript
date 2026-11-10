@@ -13,6 +13,7 @@ function RESPParserInput(input){
     if(input.charAt('*')){
         let finalStringArray = [];
         let arrayLength = input.charAt(1);
+        console.log(input)
         let arrayString = input.trim().substring(5);
         let arrayOfItems = arrayString.split('$');
         console.log(arrayOfItems);
