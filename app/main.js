@@ -5,25 +5,31 @@ console.log("Logs from your program will appear here!");
 function RESPParserInput(input){
     console.log(input);
     //RESP string example $3\r\nhey\r\n
-    //RESP array example *2\r\n $5\r\nhello\r\n $5\r\nworld\r\n
-    if(input.charAt(0) === '*'){
-        let finalStringArray = [];
-        let arrayLength = parseInt(input.charAt(1));
-        let arrayString = input.trim().substring(5);
-        let arrayOfItems = arrayString.split('$');
-        console.log(arrayOfItems);
-        for (let i = 0; i< arrayLength; i++){
-            let item = arrayOfItems[i].split('\r\n').filter((ele)=>{
-                    return isNaN(ele);
-            }).join('');
-            finalStringArray.push(item)
-        }
-        console.log(finalStringArray);
+    //RESP array example *2 \r\n  $5 \r\nhello\r\n $5 \r\n world \r\n
+    // if(input.charAt(0) === '*'){
+    //     let finalStringArray = [];
+    //     let arrayLength = parseInt(input.charAt(1));
+    //     let arrayString = input.trim().substring(5);
+    //     let arrayOfItems = arrayString.split('$');
+    //     console.log(arrayOfItems);
+    //     for (let i = 0; i< arrayLength; i++){
+    //         let item = arrayOfItems[i].split('\r\n').filter((ele)=>{
+    //                 return isNaN(ele);
+    //         }).join('');
+    //         finalStringArray.push(item)
+    //     }
+    //     console.log(finalStringArray);
         
-        return finalStringArray;
+    //     return finalStringArray;
 
-    }
+    // }
+    let res = input.trim().split('\r\n')
+                .map((ele) => ele.toLowerCase())
+                .filter((str)=> !(str.startsWith('*') ||str.startsWith('$')));
+    console.log(res);
+    return res;
 }
+RESPParserInput('*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n')
 // Building RESP output from a string passed to it.
 function RESPParserOutput(input){
    return `$${Buffer.byteLength(input)}\r\n${input}\r\n`;
@@ -62,3 +68,5 @@ const server = net.createServer((connection) => {
 });
 
 server.listen(6379, "127.0.0.1");
+
+
