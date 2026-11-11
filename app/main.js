@@ -46,6 +46,7 @@ const server = net.createServer((connection) => {
     let inputData = RESPParserInput(data.toString());
     if(inputData[0].toLowerCase() === 'echo'){
         let response = RESPParserOutput(inputData[1]);
+        console.log(response);
         connection.write(response);
     }  
   })
