@@ -26,10 +26,11 @@ function RESPParserInput(input){
 
     }
 }
+// Building RESP output from a string passed to it.
 function RESPParserOutput(input){
     let stringLength = input.length;
     console.log('$' + `${stringLength}\\r\\n${input}\\r\\n`)
-    return `${stringLength}\r\n{input}\r\n`
+    return '$' + `${stringLength}\\r\\n${input}\\r\\n`;
 }
 
 // Uncomment the code below to pass the first stage
@@ -44,18 +45,6 @@ const server = net.createServer((connection) => {
     }  
   })
 
-// function RESPParserOutput(input){
-
-// }
-// Parser the RESP input from the client and output the strings or outputs
-// function RESPParserInput(input){
-//     //RESP string example $3\r\nhey\r\n
-//     if(input.CharAt(0) === "$"){
-//     let slicedString = input.trim().subString(2);
-//        let finalString = slicedString.split('\r\n').join('');
-//         console.log(finalString);
-//     }
-// }
 });
 
 server.listen(6379, "127.0.0.1");
