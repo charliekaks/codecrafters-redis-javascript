@@ -6,11 +6,11 @@ console.log("Logs from your program will appear here!");
 function RESPParserInput(input){
     console.log(input);
     //RESP string example $3\r\nhey\r\n
-    // if(input.charAt(0) === "$"){
-    // let slicedString = input.trim().substring(2);
-    // let finalString = slicedString.split('\r\n').join('');
-    //     console.log(finalString);
-    // }
+    if(input.charAt(0) === "$"){
+    let slicedString = input.trim().substring(2);
+    let finalString = slicedString.split('\r\n').join('');
+        return finalString;
+    }
     //RESP array example *2\r\n $5\r\nhello\r\n $5\r\nworld\r\n
     if(input.charAt(0) === '*'){
         let finalStringArray = [];
@@ -46,7 +46,10 @@ const server = net.createServer((connection) => {
         let response = RESPParserOutput(inputData[1]);
         console.log(response);
         connection.write(response);
-    }  
+    } else if (inputData.toLowerCase() === 'ping'){
+        connection.write('+PONG\r\n')
+    }
+  
   })
 
 });
