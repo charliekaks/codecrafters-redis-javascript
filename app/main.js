@@ -11,7 +11,7 @@ function RESPParserInput(input){
     //     console.log(finalString);
     // }
     //RESP array example *2\r\n $5\r\nhello\r\n $5\r\nworld\r\n
-    if(input.charAt('*')){
+    if(input.charAt(0) === '*'){
         let finalStringArray = [];
         let arrayLength = input.charAt(1);
         // console.log(input)
@@ -36,8 +36,8 @@ function RESPParserOutput(input){
 const server = net.createServer((connection) => {
   //Listening and responding to clients requests
   connection.on('data',(data)=>{
-    console.log(data.toString());
-    let inputData = RESPParserInput(data);
+    //console.log(data.toString());
+    let inputData = RESPParserInput(data.toString());
     if(inputData[0].toLowerCase() === 'echo'){
         let response = RESPParserOutput(inputData[1]);
         connection.write(response);
