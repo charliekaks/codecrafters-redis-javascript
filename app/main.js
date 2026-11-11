@@ -1,4 +1,3 @@
-const { log } = require("console");
 const net = require("net");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -6,16 +5,10 @@ console.log("Logs from your program will appear here!");
 function RESPParserInput(input){
     console.log(input);
     //RESP string example $3\r\nhey\r\n
-    // if(input.charAt(0) === "$"){
-    // let slicedString = input.trim().substring(2);
-    // let finalString = slicedString.split('\r\n').join('');
-    //     return finalString;
-    // }
     //RESP array example *2\r\n $5\r\nhello\r\n $5\r\nworld\r\n
     if(input.charAt(0) === '*'){
         let finalStringArray = [];
-        let arrayLength = input.charAt(1);
-        // console.log(input)
+        let arrayLength = parseInt(input.charAt(1));
         let arrayString = input.trim().substring(5);
         let arrayOfItems = arrayString.split('$');
         console.log(arrayOfItems);
@@ -38,6 +31,8 @@ function RESPParserOutput(input){
 
 // Uncomment the code below to pass the first stage
 const server = net.createServer((connection) => {
+  //Object to store key value pairs
+    storedValues = {};
   //Listening and responding to clients requests
   connection.on('data',(data)=>{
     console.log(data.toString());
@@ -48,6 +43,18 @@ const server = net.createServer((connection) => {
         connection.write(response);
     } else if (inputData[0].toLowerCase() === 'ping'){
         connection.write('+PONG\r\n')
+    }else if(inputData[0].toLowerCase() === 'set'){
+        let firstKey = inputData[1];
+        let firstValue = inputData[2];
+        storedValues[firstKey] = firstValue;
+        connection.write('+OK\r\n')
+    }else if(inputData[0].toLowerCase() === 'get'){
+        if(!(inputData[1] in storedValues)){
+            connection.write('$-1\r\n');
+        }else{
+            let res = storedValues[inputData[1]]
+            connection.write(RESPParserOutput(res));
+        }
     }
   
   })
