@@ -1,3 +1,4 @@
+const { log } = require("console");
 const net = require("net");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -22,6 +23,8 @@ function RESPParserInput(input){
             let item = arrayOfItems[i].substring(1).split('\r\n').join('');
             finalStringArray.push(item)
         }
+        console.log(finalStringArray);
+        
         return finalStringArray;
 
     }
