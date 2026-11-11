@@ -20,7 +20,9 @@ function RESPParserInput(input){
         let arrayOfItems = arrayString.split('$');
         console.log(arrayOfItems);
         for (let i = 0; i< arrayLength; i++){
-            let item = arrayOfItems[i].substring(1).split('\r\n').join('');
+            let item = arrayOfItems[i].split('\r\n').filter((ele)=>{
+                    return isNaN(ele);
+            }).join('');
             finalStringArray.push(item)
         }
         console.log(finalStringArray);
@@ -33,7 +35,7 @@ function RESPParserInput(input){
 function RESPParserOutput(input){
     let stringLength = input.length;
     console.log('$' + `${stringLength}\\r\\n${input}\\r\\n`)
-    let out = '$' + `${stringLength}\r\n${input}\r\n`
+    let out = '$' + `${stringLength}\\r\\n${input}\\r\\n`
     console.log(out);
     return out;
 }
