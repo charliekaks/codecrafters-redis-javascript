@@ -33,7 +33,9 @@ function RESPParserInput(input){
 function RESPParserOutput(input){
     let stringLength = input.length;
     console.log('$' + `${stringLength}\\r\\n${input}\\r\\n`)
-    return '$' + `${stringLength}\\r\\n${input}\\r\\n`;
+    let out = '$' + `${stringLength}\\r\\n${input}\\r\\n`
+    console.log(out);
+    return out;
 }
 
 // Uncomment the code below to pass the first stage
