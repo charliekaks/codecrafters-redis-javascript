@@ -33,11 +33,7 @@ function RESPParserInput(input){
 }
 // Building RESP output from a string passed to it.
 function RESPParserOutput(input){
-    let stringLength = input.length;
-    console.log('$' + `${stringLength}\\r\\n${input}\\r\\n`)
-    let out = '$' + `${stringLength}\\r\\n${input}\\r\\n`
-    console.log(out);
-    return out;
+   return `$${Buffer.byteLength(input)}\r\n${input}\r\n`;
 }
 
 // Uncomment the code below to pass the first stage
