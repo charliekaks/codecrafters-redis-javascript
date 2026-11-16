@@ -36,6 +36,7 @@ const server = net.createServer((connection) => {
     } else if (inputData[0] === 'ping'){
         connection.write('+PONG\r\n')
     }else if(inputData[0] === 'set'){
+        console.log(inputData.length)
         if(inputData.length > 3){
             if(inputData[4].toLowerCase() === 'ex'){
                 let ttlInMilliseconds =  Date.now() + (parseInt(inputData[5]) * 1000);
