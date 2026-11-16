@@ -16,14 +16,8 @@ function RESPParserOutput(input){
    return `$${Buffer.byteLength(input)}\r\n${input}\r\n`;
 }
 
-function updateAfterExpiry(array, key){
-    array[1] = key;
-}
 //The PX option is used to set a key's expiry time in milliseconds.
 //The EX option is used to set a key's expiry time in seconds.
-function expiryFunc(key, array, ttl){
-    setTimeout(updateAfterExpiry,  ttl, array, key);
-}
 
 // Uncomment the code below to pass the first stage
 const server = net.createServer((connection) => {
@@ -43,35 +37,27 @@ const server = net.createServer((connection) => {
     }else if(inputData[0] === 'set'){
         if(inputData.length > 3){
             if(inputData[3].toLowerCase() === 'ex'){
-                let ttlInMilliseconds = parseInt(inputData[4]) * 1000;
-                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
-                let valueArray = storedValues.get(inputData[1]);
-                setTimeout(updateAfterExpiry,ttlInMilliseconds,'passive');
-                //expiryFunc('passive',valueArray,10);
+                let ttlInMilliseconds = Date.now() + parseInt(inputData[4]) * 1000;
+                storedValues.set(inputData[1], [inputData[2],ttlInMilliseconds]);
 
             }
-
             if(inputData[3].toLowerCase() === 'px'){
-                let ttlInMilliseconds = parseInt(inputData[4]);
-                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
-                setTimeout(updateAfterExpiry,ttlInMilliseconds,'passive');
-                //expiryFunc('passive',valueArray,10);
+                let ttlInMilliseconds = Date.now() + parseInt(inputData[4]);
+                storedValues.set(inputData[1], [inputData[2], ttlInMilliseconds]);
             }
           
+        }else{
+            storedValues.set(inputData[1], [inputData[2]]);
         }
-            storedValues.set(inputData[1], [inputData[2], 'active']);
-   
+        
         connection.write('+OK\r\n')
     }else if(inputData[0] === 'get'){
-        let valueArray = storedValues.get(inputData[1]);
-        let status = valueArray[1];
-        if(!storedValues.has(inputData[1]) || status === 'passive'){
+        let expiry = storedValues.get(inputData[1]);
+        if(!storedValues.has(inputData[1]) || expiry[1] && expiry > Date.now()){
             connection.write('$-1\r\n');
         }else{
             let res = storedValues.get(inputData[1]);
             let value = res[0];
-            console.log(value);
-            console.log(res[1]);
             connection.write(RESPParserOutput(value));
         }
     }
