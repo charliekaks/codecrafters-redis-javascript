@@ -46,14 +46,14 @@ const server = net.createServer((connection) => {
                 let ttlInMilliseconds = parseInt(inputData[5]) * 1000;
                 storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
                 let valueArray = storedValues.get(inputData[1]);
-                expiryFunc('passive',valueArray,ttlInMilliseconds);
+                expiryFunc('passive',valueArray,10);
 
             }
 
             if(inputData[4].toLowerCase() === 'px'){
                 let ttlInMilliseconds = parseInt(inputData[5]);
                 storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
-                expiryFunc('passive',valueArray,ttlInMilliseconds);
+                expiryFunc('passive',valueArray,10);
             }
           
         }
