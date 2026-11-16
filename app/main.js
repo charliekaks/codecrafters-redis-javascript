@@ -16,14 +16,9 @@ function RESPParserOutput(input){
    return `$${Buffer.byteLength(input)}\r\n${input}\r\n`;
 }
 
-function updateAfterExpiry(array, key){
-    array[1] = key;
-}
 //The PX option is used to set a key's expiry time in milliseconds.
 //The EX option is used to set a key's expiry time in seconds.
-function expiryFunc(key, array, ttl){
-    setTimeout(updateAfterExpiry,  ttl, array, key);
-}
+
 
 // Uncomment the code below to pass the first stage
 const server = net.createServer((connection) => {
@@ -44,28 +39,22 @@ const server = net.createServer((connection) => {
         if(inputData.length > 3){
             if(inputData[4].toLowerCase() === 'ex'){
                 let ttlInMilliseconds = parseInt(inputData[5]) * 1000;
-                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
-                let valueArray = storedValues.get(inputData[1]);
-                setTimeout(updateAfterExpiry,1,valueArray,'passive');
-                //expiryFunc('passive',valueArray,10);
-
+                storedValues.set(inputData[1], [inputData[2], Date.now() + ttlInMilliseconds]);
             }
 
             if(inputData[4].toLowerCase() === 'px'){
                 let ttlInMilliseconds = parseInt(inputData[5]);
-                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
-                setTimeout(updateAfterExpiry,1,valueArray,'passive');
-                //expiryFunc('passive',valueArray,10);
+                storedValues.set(inputData[1], [inputData[2], Date.now() + ttlInMilliseconds]);
             }
           
         }
-            storedValues.set(inputData[1], [inputData[2], 'active']);
+            storedValues.set(inputData[1], [inputData[2]]);
    
         connection.write('+OK\r\n')
     }else if(inputData[0] === 'get'){
         let valueArray = storedValues.get(inputData[1]);
         let status = valueArray[1];
-        if(!storedValues.has(inputData[1]) || status === 'passive'){
+        if(!storedValues.has(inputData[1]) || Date.now() > status){
             connection.write('$-1\r\n');
         }else{
             let res = storedValues.get(inputData[1]);
