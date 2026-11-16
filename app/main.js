@@ -55,9 +55,9 @@ const server = net.createServer((connection) => {
                 expiryFunc('passive',valueArray,ttlInMilliseconds);
             }
           
-        }else{
-            storedValues.set(inputData[1], [inputData[2], 'active']);
         }
+            storedValues.set(inputData[1], [inputData[2], 'active']);
+   
         connection.write('+OK\r\n')
     }else if(inputData[0] === 'get'){
         let valueArray = storedValues.get(inputData[1]);
