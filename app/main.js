@@ -57,6 +57,7 @@ const server = net.createServer((connection) => {
         let valueArray = storedValues.get(inputData[1]);
         let status = valueArray[1];
         if(!storedValues.has(inputData[1]) || Date.now() > status){
+            let res = storedValues.get(inputData[1]);
             let value = res[0];
             console.log(value);
             console.log(res[1]);
