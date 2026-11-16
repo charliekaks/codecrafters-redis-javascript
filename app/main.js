@@ -38,12 +38,12 @@ const server = net.createServer((connection) => {
     }else if(inputData[0] === 'set'){
         console.log(inputData.length)
         if(inputData.length > 3){
-            if(inputData[4].toLowerCase() === 'ex'){
+            if(inputData[3].toLowerCase() === 'ex'){
                 let ttlInMilliseconds =  Date.now() + (parseInt(inputData[4]) * 1000);
                 storedValues.set(inputData[1], [inputData[2], ttlInMilliseconds]);
             }
 
-            if(inputData[4].toLowerCase() === 'px'){
+            if(inputData[3].toLowerCase() === 'px'){
                 let ttlInMilliseconds = Date.now() + parseInt(inputData[4]);
                 storedValues.set(inputData[1], [inputData[2], ttlInMilliseconds]);
             }
