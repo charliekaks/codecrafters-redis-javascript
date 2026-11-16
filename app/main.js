@@ -38,7 +38,7 @@ const server = net.createServer((connection) => {
     }else if(inputData[0] === 'set'){
         if(inputData.length > 3){
             if(inputData[4].toLowerCase() === 'ex'){
-                let ttlInMilliseconds =  Date.now() + parseInt(inputData[5]) * 1000;
+                let ttlInMilliseconds =  Date.now() + (parseInt(inputData[5]) * 1000);
                 storedValues.set(inputData[1], [inputData[2], ttlInMilliseconds]);
             }
 
@@ -55,6 +55,9 @@ const server = net.createServer((connection) => {
         let valueArray = storedValues.get(inputData[1]);
         let status = valueArray[1];
         if(!storedValues.has(inputData[1]) || Date.now() > status){
+            let value = res[0];
+            console.log(value);
+            console.log(res[1]);
             connection.write('$-1\r\n');
         }else{
             let res = storedValues.get(inputData[1]);
