@@ -49,6 +49,7 @@ const server = net.createServer((connection) => {
                 expiryFunc('passive',valueArray,ttlInMilliseconds);
 
             }
+
             if(inputData[4].toLowerCase() === 'px'){
                 let ttlInMilliseconds = parseInt(inputData[5]);
                 storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
@@ -67,6 +68,8 @@ const server = net.createServer((connection) => {
         }else{
             let res = storedValues.get(inputData[1]);
             let value = res[0];
+            console.log(value);
+            console.log(res[1]);
             connection.write(RESPParserOutput(value));
         }
     }
