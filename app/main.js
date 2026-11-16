@@ -4,25 +4,6 @@ const net = require("net");
 console.log("Logs from your program will appear here!");
 function RESPParserInput(input){
     console.log(input);
-    //RESP string example $3\r\nhey\r\n
-    //RESP array example *2 \r\n  $5 \r\nhello\r\n $5 \r\n world \r\n
-    // if(input.charAt(0) === '*'){
-    //     let finalStringArray = [];
-    //     let arrayLength = parseInt(input.charAt(1));
-    //     let arrayString = input.trim().substring(5);
-    //     let arrayOfItems = arrayString.split('$');
-    //     console.log(arrayOfItems);
-    //     for (let i = 0; i< arrayLength; i++){
-    //         let item = arrayOfItems[i].split('\r\n').filter((ele)=>{
-    //                 return isNaN(ele);
-    //         }).join('');
-    //         finalStringArray.push(item)
-    //     }
-    //     console.log(finalStringArray);
-        
-    //     return finalStringArray;
-
-    // }
     let res = input.trim().split('\r\n')
                 .map((ele) => ele.toLowerCase())
                 .filter((str)=> !(str.startsWith('*') ||str.startsWith('$')));
@@ -35,31 +16,57 @@ function RESPParserOutput(input){
    return `$${Buffer.byteLength(input)}\r\n${input}\r\n`;
 }
 
+function updateAfterExpiry(array, key){
+    array[1] = key;
+}
+//The PX option is used to set a key's expiry time in milliseconds.
+//The EX option is used to set a key's expiry time in seconds.
+function expiryFunc(key, array, ttl){
+    setTimeout(updateAfterExpiry,  ttl, array, key);
+}
+
 // Uncomment the code below to pass the first stage
 const server = net.createServer((connection) => {
   //Object to store key value pairs
-    storedValues = {};
+  const storedValues = new Map();
+
   //Listening and responding to clients requests
   connection.on('data',(data)=>{
     console.log(data.toString());
     let inputData = RESPParserInput(data.toString());
-    if(inputData[0].toLowerCase() === 'echo'){
+    if(inputData[0] === 'echo'){
         let response = RESPParserOutput(inputData[1]);
         console.log(response);
         connection.write(response);
-    } else if (inputData[0].toLowerCase() === 'ping'){
+    } else if (inputData[0] === 'ping'){
         connection.write('+PONG\r\n')
-    }else if(inputData[0].toLowerCase() === 'set'){
-        let firstKey = inputData[1];
-        let firstValue = inputData[2];
-        storedValues[firstKey] = firstValue;
+    }else if(inputData[0] === 'set'){
+        if(inputData.length > 3){
+            if(inputData[4].toLowerCase() === 'ex'){
+                let ttlInMilliseconds = parseInt(inputData[5]) * 1000;
+                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
+                let valueArray = storedValues.get(inputData[1]);
+                expiryFunc('passive',valueArray,ttlInMilliseconds);
+
+            }
+            if(inputData[4].toLowerCase() === 'px'){
+                let ttlInMilliseconds = parseInt(inputData[5]);
+                storedValues.set(inputData[1], [inputData[2], 'active',ttlInMilliseconds]);
+                expiryFunc('passive',valueArray,ttlInMilliseconds);
+            }
+          
+        }
+        storedValues.set(inputData[1], [inputData[2], 'active']);
         connection.write('+OK\r\n')
-    }else if(inputData[0].toLowerCase() === 'get'){
-        if(!(inputData[1] in storedValues)){
+    }else if(inputData[0] === 'get'){
+        let valueArray = storedValues.get(inputData[1]);
+        let status = valueArray[1];
+        if(!storedValues.has(inputData[1]) || status === 'passive'){
             connection.write('$-1\r\n');
         }else{
-            let res = storedValues[inputData[1]]
-            connection.write(RESPParserOutput(res));
+            let res = storedValues.get(inputData[1]);
+            let value = res[0];
+            connection.write(RESPParserOutput(value));
         }
     }
   
