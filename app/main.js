@@ -53,7 +53,7 @@ const server = net.createServer((connection) => {
         connection.write('+OK\r\n')
     }else if(inputData[0] === 'get'){
         let expiry = storedValues.get(inputData[1]);
-        if(!storedValues.has(inputData[1]) || expiry[1] && expiry > Date.now()){
+        if(!storedValues.has(inputData[1]) || expiry[1] && expiry[1] > Date.now()){
             connection.write('$-1\r\n');
         }else{
             let res = storedValues.get(inputData[1]);
